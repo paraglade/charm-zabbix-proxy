@@ -1,0 +1,7 @@
+#!/bin/bash
+set -eux # -x for verbose logging to juju debug-log
+
+juju-log "starting hook monitoring-relation-joined"
+
+#hooks/config-changed
+

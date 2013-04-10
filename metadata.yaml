@@ -1,0 +1,13 @@
+name: zabbix-proxy
+summary: "Zabbix Proxy"
+maintainer: "Nelson Roberts <nelson.roberts@pearson.com>"
+description: |
+    Installs Zabbix Proxy
+requires:
+  zabbix-server:
+    interface: server
+  db:
+    interface: mysql
+provides:
+  zabbix-proxy:
+    interface: proxy

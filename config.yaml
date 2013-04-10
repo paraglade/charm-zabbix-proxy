@@ -1,0 +1,22 @@
+options:
+  Server:
+    type: string
+    default: localhost
+    description: "List of comma delimited IP addresses (or hostnames) of Zabbix servers.
+      Incoming connections will be accepted only from the hosts listed here.
+      No spaces allowed.
+      If IPv6 support is enabled then '127.0.0.1', '::127.0.0.1', '::ffff:127.0.0.1' are treated equally.
+
+      Mandatory: no"
+  PidFile:
+    type: string
+    default: /var/run/zabbix/zabbix_proxy.pid
+    description: "Name of the PID file.
+    
+      Mandatory: no"
+  LogFile:
+    type: string
+    default: /var/log/zabbix/zabbix_proxy.log
+    description: "Name of log file. If not set, syslog is used.
+
+      Mandatory: no"

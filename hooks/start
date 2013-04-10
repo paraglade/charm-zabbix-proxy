@@ -1,0 +1,10 @@
+#!/bin/bash -eux
+juju-log "running start hook"
+
+open-port 10050/tcp
+open-port 10050/udp
+
+open-port 10051/tcp
+open-port 10051/udp
+
+/usr/local/sbin/zabbix_proxy

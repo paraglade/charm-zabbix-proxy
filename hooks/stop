@@ -1,0 +1,12 @@
+#!/bin/bash -x
+juju-log "running stop hook"
+
+close-port 10050/tcp
+close-port 10050/udp
+
+close-port 10051/tcp
+close-port 10051/udp
+
+pkill -9 zabbix_proxy
+
+exit 0
