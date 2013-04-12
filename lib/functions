@@ -12,7 +12,7 @@ update_config() {
   db_user=$(cat config/db/user)
   db_password=$(cat config/db/password) 
 
-  zabbix_server=$(config-get public-address)
+  zabbix_server=$(config-get Server)
 
   if [ -f "config/zabbix-server/Server" ] ; then
     zabbix_server=$(cat config/zabbix-server/Server)
