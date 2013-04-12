@@ -1,0 +1,46 @@
+#!/bin/bash
+
+update_config() {
+  juju-log "startung update configuration"
+
+  if [ ! -f "config/db/database" ] ; then
+    exit 0
+  fi
+
+  db_host=$(cat config/db/host)
+  db_database=$(cat config/db/database)
+  db_user=$(cat config/db/user)
+  db_password=$(cat config/db/password) 
+
+  zabbix_server=$(config-get public-address)
+
+  if [ -f "config/zabbix-server/Server" ] ; then
+    zabbix_server=$(cat config/zabbix-server/Server)
+  fi
+
+  zabbix_proxy_conf="/usr/local/etc/zabbix_proxy.conf"
+
+  pidfile=$(config-get PidFile)
+  pidfile_dir=$(dirname ${pidfile})
+  logfile=$(config-get LogFile)
+  logfile_dir=$(dirname ${logfile})
+
+  mkdir -p ${pidfile_dir}
+  mkdir -p ${logfile_dir}
+
+  chown zabbix.zabbix ${pidfile_dir}
+  chown zabbix.zabbix ${logfile_dir}
+
+  cp ${zabbix_proxy_conf} ${zabbix_proxy_conf}.$(date '+%s')
+
+  sed -i "s|^Server=.*|Server=${zabbix_server}|g" ${zabbix_proxy_conf}
+  sed -i "s|^Hostname=.*|Hostname=$(hostname)|g" ${zabbix_proxy_conf}
+  sed -i "s|^LogFile=.*log|LogFile=${logfile}|g" ${zabbix_proxy_conf}
+  sed -i "s|.*PidFile=.*pid|PidFile=${pidfile}|g" ${zabbix_proxy_conf}
+  sed -i "s|.*DBHost=.*|DBHost=${db_host}|g" ${zabbix_proxy_conf}
+  sed -i "s|^DBName=.*|DBName=${db_database}|g" ${zabbix_proxy_conf}
+  sed -i "s|^DBUser=.*|DBUser=${db_user}|g" ${zabbix_proxy_conf}
+  sed -i "s|.*DBPassword=.*|DBPassword=${db_password}|g" ${zabbix_proxy_conf}
+
+  juju-log "finished update configuration"
+}

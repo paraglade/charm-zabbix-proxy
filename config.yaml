@@ -1,7 +1,6 @@
 options:
   Server:
     type: string
-    default: localhost
     description: "List of comma delimited IP addresses (or hostnames) of Zabbix servers.
       Incoming connections will be accepted only from the hosts listed here.
       No spaces allowed.

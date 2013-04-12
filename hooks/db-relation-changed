@@ -9,11 +9,17 @@ user=`relation-get user`
 password=`relation-get password`
 host=`relation-get private-address`
 database=`relation-get database`
-server_name=`config-get server-name`
 
 if [ -z "$database" ] ; then
   exit 0
 fi
+
+mkdir -p config/db
+
+echo "$(relation-get user)" > config/db/user
+echo "$(relation-get password)" > config/db/password
+echo "$(relation-get host)" > config/db/host
+echo "$(relation-get database)" > config/db/database
 
 mysql_exec="mysql -h${host} -u${user} -p${password} ${database}"
 

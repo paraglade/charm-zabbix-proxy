@@ -3,50 +3,9 @@ set -eux # -x for verbose logging to juju debug-log
 
 juju-log "starting config-changed hook"
 
-charmdir="$PWD"
-hooksdir="${charmdir}/hooks"
+. lib/functions
 
-user=`relation-get user`
-password=`relation-get password`
-host=`relation-get private-address`
-database=`relation-get database`
-
-if [ -z "$database" ] ; then
-  exit 0
-fi
-
-zabbix_server=$(relation-get private-address)
-
-if [ -z "${zabbix_server}" ] ; then
-  zabbix_server=$(config-get Server)
-fi
-
-
-juju-log "setup zabbix config"
-
-zabbix_proxy_conf="/usr/local/etc/zabbix_proxy.conf"
-
-pidfile=$(config-get PidFile)
-pidfile_dir=$(dirname ${pidfile})
-logfile=$(config-get LogFile)
-logfile_dir=$(dirname ${logfile})
-
-mkdir -p ${pidfile_dir}
-mkdir -p ${logfile_dir}
-
-chown zabbix.zabbix ${pidfile_dir}
-chown zabbix.zabbix ${logfile_dir}
-
-cp ${zabbix_proxy_conf} ${zabbix_proxy_conf}.$(date '+%s')
-
-sed -i "s|^Server=.*|Server=${zabbix_server}|g" ${zabbix_proxy_conf}
-sed -i "s|^Hostname=.*|Hostname=$(hostname)|g" ${zabbix_proxy_conf}
-sed -i "s|^LogFile=.*log|LogFile=${logfile}|g" ${zabbix_proxy_conf}
-sed -i "s|.*PidFile=.*pid|PidFile=${pidfile}|g" ${zabbix_proxy_conf}
-sed -i "s|.*DBHost=.*|DBHost=${host}|g" ${zabbix_proxy_conf}
-sed -i "s|^DBName=.*|DBName=${database}|g" ${zabbix_proxy_conf}
-sed -i "s|^DBUser=.*|DBUser=${user}|g" ${zabbix_proxy_conf}
-sed -i "s|.*DBPassword=.*|DBPassword=${password}|g" ${zabbix_proxy_conf}
+update_config
 
 juju-log "restart services"
-${hooksdir}/restart
+hooks/restart

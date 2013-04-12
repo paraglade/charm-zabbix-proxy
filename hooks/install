@@ -1,15 +1,15 @@
 #!/bin/bash
 
 set -eu # -x for verbose logging to juju debug-log
-juju-log "Starting install of Zabbix Proxy"
+juju-log "starting install of zabbix proxy"
 
-hooksdir=${PWD}/hooks
+charmdir=${PWD}
 srcdir=${PWD}/src
 
 add-apt-repository ppa:charmers/charm-helpers > /dev/null
 apt-get -qq update && apt-get -qq -y upgrade > /dev/null
 
-apt-get -qq -y install php5-memcache mysql-client pwgen php5 php5-fpm php-apc mailutils php-mail sysstat php5-mysql php5-mcrypt php5-memcache charm-helper-sh php5-curl rsync nfs-common git-core mktemp libmysqlclient-dev libcurl4-openssl-dev libsnmp-base libsnmp-dev php5 libiksemel3 libiksemel-dev libssh2-1 libssh2-1-dev libopenipmi-dev default-jdk libsqlite3-dev php5-sqlite php5-mysql php5-gd make apache2 apache2-suexec libapache2-mod-php5 > /dev/null
+apt-get -qq -y install mysql-client pwgen mailutils sysstat charm-helper-sh rsync nfs-common git-core mktemp libmysqlclient-dev libcurl4-openssl-dev libsnmp-base libsnmp-dev libiksemel3 libiksemel-dev libssh2-1 libssh2-1-dev libopenipmi-dev default-jdk libsqlite3-dev make > /dev/null
 
 juju-log "setup zabbix user and group"
 if [ "$(grep -c zabbix /etc/group)" -lt "1" ] ; then
@@ -28,8 +28,10 @@ tar zxf ${srcdir}/zabbix-2.0.5.tar.gz
 cd zabbix-2.0.5
 
 juju-log "configure zabbix source"
-./configure --enable-server --enable-proxy --enable-agent --with-mysql --enable-ipv6 --with-net-snmp --with-libcurl --enable-java --with-ssh2 --with-openipmi --with-ldap --with-jabber > /dev/null
+./configure --enable-proxy --with-mysql --enable-ipv6 --with-net-snmp --with-libcurl --enable-java --with-ssh2 --with-openipmi --with-ldap --with-jabber > /dev/null
 
 juju-log "make zabbix source"
 make install > /dev/null
 
+juju-log "finished install of zabbix proxy"
+cd ${charmdir}
